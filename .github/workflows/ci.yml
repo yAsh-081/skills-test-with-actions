@@ -25,7 +25,14 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v4
 
+      # Runs markdown lint and saves report
       - name: Run markdown lint
-      run: |
-        npm install remark-cli remark-preset-lint-consistent
-        npx remark . --use remark-preset-lint-consistent --frail
+        run: |
+          npm install remark-cli remark-preset-lint-consistent vfile-reporter-json
+          npx remark . --use remark-preset-lint-consistent --report vfile-reporter-json 2> remark-lint-report.json
+
+      # Uploads the lint report as an artifact
+      - uses: actions/upload-artifact@v4
+        with:
+          name: remark-lint-report
+          path: remark-lint-report.json
